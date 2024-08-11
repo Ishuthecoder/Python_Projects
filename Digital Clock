@@ -1,0 +1,36 @@
+import tkinter as tk
+from time import strftime
+
+root = tk.Tk()
+root.title('Digital Clock')
+
+# Create labels once
+timelabel = tk.Label(root, font=('italic', 50), background='white', foreground='blue')
+daylabel = tk.Label(root, font=('Arial', 15), background='white', foreground='red')
+monthlabel = tk.Label(root, font=('Arial', 25), background='white', foreground='green')
+datelabel = tk.Label(root, font=('italic', 35), background='white', foreground='black')
+
+# Pack labels once
+timelabel.pack(anchor='center')
+daylabel.pack(anchor='center')
+monthlabel.pack(anchor='center')
+datelabel.pack(anchor='center')
+
+def time():
+    currenttime = strftime('%H:%M:%S %p')
+    currentDay = strftime('%A')
+    currentMonth = strftime('%B')
+    currentDate = strftime('%D')
+    
+    timelabel.config(text=f'Time: {currenttime}')
+    daylabel.config(text=f'Day: {currentDay}')
+    monthlabel.config(text=f'Month: {currentMonth}')
+    datelabel.config(text=f'Date: {currentDate}')
+    
+    # Call the time function again after 1000 milliseconds (1 second)
+    root.after(1000, time)
+
+# Start the time function
+time()
+
+root.mainloop()
