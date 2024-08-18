@@ -1,0 +1,151 @@
+#import libraries
+import turtle 
+import random
+import time
+
+#creating screen
+screen=turtle.Screen()
+screen.title('Welcome to Snake Game')
+screen.setup(width=700,height=700)
+screen.tracer(0)
+screen.bgcolor('Black')
+turtle.speed(5)
+turtle.pensize(4)
+turtle.penup()
+turtle.goto(-310,250)
+turtle.pendown()
+turtle.color('yellow')
+turtle.forward(600)
+turtle.right(90)
+turtle.forward(500)
+turtle.right(90)
+turtle.forward(600)
+turtle.right(90)
+turtle.forward(500)
+turtle.penup()
+turtle.hideturtle()
+
+#score on dashboard
+score=0
+delay=0.1
+
+#create snake character
+snake=turtle.Turtle()
+snake.speed()
+snake.shape('circle')
+snake.color('red')
+snake.penup()
+snake.goto(0,0)
+snake.direction='stop'
+
+#food character
+fruit=turtle.Turtle()
+fruit.speed()
+fruit.shape('circle')
+fruit.color('green')
+fruit.penup()
+fruit.goto(30,30)
+
+oldfruit=[]
+
+#creating game over screen
+scoring=turtle.Turtle()
+scoring.speed(0)
+scoring.color('Black')
+scoring.penup()
+scoring.hideturtle()
+scoring.goto(0,300)
+scoring.write('Score:',align='center',font=('Arial',30,'bold'))
+
+# movement of snake
+
+def snake_goup():
+    if snake.direction!='down':
+        snake.direction='up'
+        
+def snake_godown():
+    if snake.direction!='up':
+        snake.direction='down'
+        
+def snake_goright():
+    if snake.direction!='left':
+        snake.direction='right'
+        
+def snake_goleft():
+    if snake.direction!='right':
+        snake.direction='left'
+        
+def snake_move():
+    if snake.direction=='up':
+        y=snake.ycor()
+        snake.sety(y+20)
+    if snake.direction=='down':
+        y=snake.ycor()
+        snake.sety(y-20)
+    if snake.direction=='left':
+        x=snake.xcor()
+        snake.setx(x-20)
+    if snake.direction=='right':
+        x=snake.xcor()
+        snake.setx(x+20)
+
+# create keyboard binding
+
+screen.listen()
+screen.onkeypress(snake_goup,'Up')
+screen.onkeypress(snake_godown,'Down')
+screen.onkeypress(snake_goleft,'Left')
+screen.onkeypress(snake_goright,'Right')
+
+# make main loop
+while True:
+    screen.update()
+    
+    #colllision b/w snake and fruit
+    if snake.distance(fruit)<20:
+        x=random.randint(-290,270)
+        y=random.randint(-240,240)
+        fruit.goto(x,y)
+        scoring.clear()
+        score+=1
+        scoring.write('Score:{}'.format(score),align='center',font=('Arial',30,'bold'))
+        delay-=0.001
+        
+        #new food
+        new_fruit=turtle.Turtle()
+        new_fruit.speed(0)
+        new_fruit.shape('circle')
+        new_fruit.color('green')
+        new_fruit.penup()    
+        oldfruit.append(new_fruit)
+    
+    #adding ball to snake
+    for index in range(len(oldfruit)-1,0,-1):
+        a=oldfruit[index-1].xcor()
+        b=oldfruit[index-1].ycor()
+        oldfruit[index].goto(a,b)
+    if len(oldfruit)>0:
+        a=snake.xcor()
+        b=snake.ycor()
+        oldfruit[0].goto(a,b)
+    snake_move()
+    
+    #snake and border collision
+    
+    if snake.xcor()>290 or snake.xcor()<-290 or snake.ycor()>240 or snake.ycor()<-240:
+        time.sleep(1)
+        screen.clear()
+        screen.bgcolor('blue')
+        scoring.goto(0,0)
+        scoring.write('Game Over \n Your Score is {}'.format(score),align='center',font=('Arial',30,'bold'))
+        
+    #snake collision
+    for food in oldfruit:
+        if food.distance(snake)<20:
+            time.sleep(1)
+            screen.clear()
+            screen.bgcolor('blue')
+            scoring.goto(0,0)
+            scoring.write('Game Over \n Your Score is {}'.format(score),align='center',font=('Arial',30,'bold'))
+    time.sleep(delay)
+turtle.Terminator()
